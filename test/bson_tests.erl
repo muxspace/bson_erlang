@@ -18,6 +18,11 @@ bson_test() ->
 	{a, 1, b, 2, c, 3, d, 4} = bson:append ({a, 1, b, 2}, {c, 3, d, 4}),
 	[{b, {x, 2, y, 3}}, {a, 1}, {c, [mon, tue, wed]}] = bson:fields (Doc).
 
+reflate_test() ->
+  List = [ {b, [{x,2}, {y,3}]}, {a,1}, {c,[mon,tue,wed]} ],
+  Doc = bson:document(List),
+  List = bson:reflate(Doc).
+  
 time_test() ->
 	{MegaSecs, Secs, _} = bson:timenow(),
 	{MegaSecs, Secs, 0} = bson:secs_to_unixtime (bson:unixtime_to_secs ({MegaSecs, Secs, 0})).

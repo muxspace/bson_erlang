@@ -14,6 +14,7 @@
 -export ([utf8/1, str/1]).
 -export ([timenow/0, ms_precision/1, secs_to_unixtime/1, unixtime_to_secs/1]).
 -export ([objectid/3, objectid_time/1]).
+-export ([reflate/1]).
 
 -type maybe(A) :: {A} | {}.
 
@@ -57,6 +58,12 @@ document (Fields) -> list_to_tuple (flatten (Fields)).
 % Flatten list by removing tuple constructors
 flatten ([]) -> [];
 flatten ([{Label, Value} | Fields]) -> [Label, Value | flatten (Fields)].
+
+%% Turn a BSON document back into a tuple list
+-spec reflate (document()) -> [{label(), value()}].
+reflate(Doc) ->
+  Fn = fun(K,V,A) -> A ++ [{K,V}] end,
+  bson:doc_foldl(Fn, [ ], Doc).
 
 -spec lookup (label(), document()) -> maybe (value()).
 % Value of field in document if there
